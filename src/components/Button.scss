@@ -1,0 +1,28 @@
+.buttonContainer .buttonStyle{
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 3px;
+    font-weight: 700;
+    font-size: 14px;
+    background-color: rgb(52, 52, 52);
+    color: white;
+}
+
+.buttonContainer:nth-of-type(n):nth-of-type(-n+3) button {
+    background-color: rgb(164, 164, 164);
+    color: black;
+}
+
+.buttonContainer:nth-of-type(4n+0) button, .buttonContainer:last-of-type button {
+    background-color: rgb(249, 162, 5);
+    color: white;
+}
+
+.buttonContainer:nth-of-type(17) button {
+    width: 84px;
+    border-radius: 39px;
+    text-align: initial;
+    padding-left: 14px;
+}
