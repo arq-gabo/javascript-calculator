@@ -1,10 +1,9 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { addNum } from "../features/numLarge/numLargeSlice";
 
 import "./Button.scss";
 
-const Button = ({ valBtn }) => {
+const Button = ({ valBtn, clickFunction }) => {
 	const decodeStr = val => {
 		const parser = new DOMParser();
 		const decodedString = parser.parseFromString(
@@ -14,15 +13,9 @@ const Button = ({ valBtn }) => {
 		return decodedString;
 	};
 
-	const dispatch = useDispatch();
-
-	const handleClick = e => {
-		dispatch(addNum(valBtn));
-	};
-
 	return (
 		<div className="buttonContainer">
-			<button className="buttonStyle" onClick={handleClick}>
+			<button className="buttonStyle" onClick={clickFunction}>
 				{valBtn.length > 1 ? decodeStr(valBtn) : valBtn}
 			</button>
 		</div>

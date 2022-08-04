@@ -4,9 +4,7 @@ import "./DisplaySmall.scss";
 const DisplaySmall = () => {
 	return (
 		<div className="displaySmallContainer">
-			<p className="displaySmallFont">
-				aqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
-			</p>
+			<p className="displaySmallFont">0</p>
 		</div>
 	);
 };

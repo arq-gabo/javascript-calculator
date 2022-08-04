@@ -2,14 +2,26 @@
     position: absolute;
     top: 121px;
     left: 38px;
-    height: auto;
+    height: 47px;
     width: 180px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
 }
 
 .displayLargeFont {
     margin: 0;
+    width: auto;
     color: #FFFFFF;
     font-size: 47px;
     font-weight: 300;
     text-align: right;
+}
+
+.fontMedium {
+    font-size: 34px;
+}
+
+.fontSmall {
+    font-size: 22px;
 }
