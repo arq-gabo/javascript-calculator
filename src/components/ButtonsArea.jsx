@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	addNum,
@@ -6,6 +6,8 @@ import {
 	clearDisplayLg,
 	addMinuSing
 } from "../features/numLarge/numLargeSlice";
+
+import { addOperator } from "../features/numSmall/numSmallSlice";
 
 import Button from "./Button";
 import "./ButtonsArea.scss";
@@ -37,7 +39,7 @@ const ButtonsArea = () => {
 			funcClick: () =>
 				num.length < 14 ? dispatch(addMinuSing("-")) : showAlert()
 		},
-		{ button: "%" },
+		{ button: "%", funcClick: () => dispatch(addOperator()) },
 		{ button: "&#247;" },
 		{
 			button: 7,
