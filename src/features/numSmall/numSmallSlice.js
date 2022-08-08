@@ -6,11 +6,23 @@ export const numSmallSlice = createSlice({
 	name: "numSmall",
 	initialState,
 	reducers: {
-		addOperator: (state, action) => {
-			console.log("funciona");
-		}
+		pushEquation: (state, action) => {
+			state.push(action.payload);
+		},
+
+		divideOperator: (state, action) => {},
+
+		multiplyOperator: (state, action) => {},
+
+		subtractOperator: (state, action) => {},
+
+		addOperator: (state, action) => {},
+
+		equalsOperator: (state, action) => {},
+
+		clearDisplaySl: () => initialState
 	}
 });
 
-export const { addOperator } = numSmallSlice.actions;
+export const { pushEquation, clearDisplaySl } = numSmallSlice.actions;
 export default numSmallSlice.reducer;

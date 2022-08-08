@@ -4,10 +4,14 @@ import {
 	addNum,
 	addDecimal,
 	clearDisplayLg,
-	addMinuSing
+	addMinuSing,
+	resetOperator
 } from "../features/numLarge/numLargeSlice";
 
-import { addOperator } from "../features/numSmall/numSmallSlice";
+import {
+	pushEquation,
+	clearDisplaySl
+} from "../features/numSmall/numSmallSlice";
 
 import Button from "./Button";
 import "./ButtonsArea.scss";
@@ -31,16 +35,42 @@ const ButtonsArea = () => {
 		}
 	};
 
+	// Function for transform array of numbers to number float for make anther operations
+	const arrToNum = valArr => {
+		return parseFloat(valArr.join(""));
+	};
+
 	// Object whith the property of the buttons of the calculator
 	const calObj = [
-		{ button: "C", funcClick: () => dispatch(clearDisplayLg()) },
+		{
+			button: "C",
+			funcClick: () => {
+				dispatch(clearDisplayLg());
+				dispatch(clearDisplaySl());
+			}
+		},
 		{
 			button: "&#177;",
 			funcClick: () =>
 				num.length < 14 ? dispatch(addMinuSing("-")) : showAlert()
 		},
-		{ button: "%", funcClick: () => dispatch(addOperator()) },
-		{ button: "&#247;" },
+		{
+			button: "%",
+			funcClick: () => {
+				dispatch(pushEquation(arrToNum(num) * 0.01));
+				dispatch(clearDisplayLg());
+				dispatch(resetOperator("%"));
+			}
+		},
+		{
+			button: "&#247;",
+			funcClick: () => {
+				dispatch(pushEquation(arrToNum(num)));
+				dispatch(pushEquation("/"));
+				dispatch(clearDisplayLg());
+				dispatch(resetOperator("/"));
+			}
+		},
 		{
 			button: 7,
 			funcClick: () => clickNum("7")

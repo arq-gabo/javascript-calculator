@@ -30,11 +30,20 @@ export const numLargeSlice = createSlice({
 			}
 		},
 
+		resetOperator: (state, action) => {
+			state[0] = action.payload;
+		},
+
 		clearDisplayLg: () => initialState
 	}
 });
 
-export const { addNum, addDecimal, addMinuSing, clearDisplayLg } =
-	numLargeSlice.actions;
+export const {
+	addNum,
+	addDecimal,
+	addMinuSing,
+	resetOperator,
+	clearDisplayLg
+} = numLargeSlice.actions;
 
 export default numLargeSlice.reducer;
