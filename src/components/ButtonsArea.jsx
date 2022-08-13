@@ -4,8 +4,7 @@ import {
 	addNum,
 	addDecimal,
 	clearDisplayLg,
-	addMinuSing,
-	resetOperator
+	addMinuSing
 } from "../features/numLarge/numLargeSlice";
 
 import {
@@ -19,25 +18,42 @@ import "./ButtonsArea.scss";
 const ButtonsArea = () => {
 	// for get state from redux
 	const dispatch = useDispatch();
-	const num = useSelector(state => state.numLarge);
+	const numLg = useSelector(state => state.numLarge);
+	const numSl = useSelector(state => state.numSmall);
 
 	// Show alert in case exced num of array
 	const showAlert = () => {
 		alert("Exceeded the number of digits");
 	};
 
-	// Function for dispatch to the state if the num length is less of 14
-	const clickNum = val => {
-		if (num.length < 14) {
-			dispatch(addNum(val));
-		} else {
-			showAlert();
-		}
+	//Function for dispatch to the state if the num length is less of 14
+	const clickBtn = (state, val, func) => {
+		state.length < 14 ? dispatch(func(val)) : showAlert();
+		if (numLg[0] === "%") dispatch(pushEquation("*"));
 	};
 
 	// Function for transform array of numbers to number float for make anther operations
-	const arrToNum = valArr => {
-		return parseFloat(valArr.join(""));
+	const arrToNum = valArr => parseFloat(valArr.join(""));
+
+	// Function for apply format for not exceed 10 decimal
+	const formatter = new Intl.NumberFormat("en-IN", {
+		maximumFractionDigits: 10
+	});
+
+	// Function to apply functionality on the big screen when an operator button is pressed
+	const clearAndSendLg = val => {
+		dispatch(clearDisplayLg());
+		dispatch(addNum(val));
+	};
+
+	const dispatchStateSm = val => {
+		const operators = ["%", "+", "-", "*", "/"];
+		if (!operators.includes(numLg[numLg.length - 1])) {
+			dispatch(pushEquation(parseFloat(numLg.join(""))));
+			dispatch(pushEquation(val));
+		} else if (numLg[0] === "%") {
+			dispatch(pushEquation(val));
+		}
 	};
 
 	// Object whith the property of the buttons of the calculator
@@ -51,73 +67,94 @@ const ButtonsArea = () => {
 		},
 		{
 			button: "&#177;",
-			funcClick: () =>
-				num.length < 14 ? dispatch(addMinuSing("-")) : showAlert()
+			funcClick: () => clickBtn(numLg, "-", addMinuSing)
 		},
 		{
 			button: "%",
 			funcClick: () => {
-				dispatch(pushEquation(arrToNum(num) * 0.01));
-				dispatch(clearDisplayLg());
-				dispatch(resetOperator("%"));
+				if (numLg[0] !== "%") {
+					dispatch(
+						pushEquation(
+							parseFloat(
+								formatter.format(arrToNum(numLg) * 0.01).replace(",", "")
+							)
+						)
+					);
+					clearAndSendLg("%");
+				}
 			}
 		},
 		{
 			button: "&#247;",
 			funcClick: () => {
-				dispatch(pushEquation(arrToNum(num)));
-				dispatch(pushEquation("/"));
-				dispatch(clearDisplayLg());
-				dispatch(resetOperator("/"));
+				dispatchStateSm("/");
+				clearAndSendLg("/");
 			}
 		},
 		{
 			button: 7,
-			funcClick: () => clickNum("7")
+			funcClick: () => clickBtn(numLg, "7", addNum)
 		},
 		{
 			button: 8,
-			funcClick: () => clickNum("8")
+			funcClick: () => clickBtn(numLg, "8", addNum)
 		},
 		{
 			button: 9,
-			funcClick: () => clickNum("9")
+			funcClick: () => clickBtn(numLg, "9", addNum)
 		},
-		{ button: "x" },
+		{
+			button: "x",
+			funcClick: () => {
+				dispatchStateSm("*");
+				clearAndSendLg("*");
+			}
+		},
 		{
 			button: 4,
-			funcClick: () => clickNum("4")
+			funcClick: () => clickBtn(numLg, "4", addNum)
 		},
 		{
 			button: 5,
-			funcClick: () => clickNum("5")
+			funcClick: () => clickBtn(numLg, "5", addNum)
 		},
 		{
 			button: 6,
-			funcClick: () => clickNum("6")
+			funcClick: () => clickBtn(numLg, "6", addNum)
 		},
-		{ button: "&#8211;" },
+		{
+			button: "&#8211;",
+			funcClick: () => {
+				dispatchStateSm("-");
+				clearAndSendLg("-");
+			}
+		},
 		{
 			button: 1,
-			funcClick: () => clickNum("1")
+			funcClick: () => clickBtn(numLg, "1", addNum)
 		},
 		{
 			button: 2,
-			funcClick: () => clickNum("2")
+			funcClick: () => clickBtn(numLg, "2", addNum)
 		},
 		{
 			button: 3,
-			funcClick: () => clickNum("3")
+			funcClick: () => clickBtn(numLg, "3", addNum)
 		},
-		{ button: "+" },
+		{
+			button: "+",
+			funcClick: () => {
+				dispatchStateSm("+");
+				clearAndSendLg("+");
+			}
+		},
 		{
 			button: 0,
-			funcClick: () => clickNum("0")
+			funcClick: () => clickBtn(numLg, "0", addNum)
 		},
 		{
 			button: ".",
-			funcClick: () =>
-				num.length < 14 ? dispatch(addDecimal(".")) : showAlert()
+			funcClick: () => clickBtn(numLg, ".", addDecimal)
 		},
 		{ button: "=" }
 	];

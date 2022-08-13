@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [];
+const operators = ["%", "-", "+", "*", "/"];
 
 export const numSmallSlice = createSlice({
 	name: "numSmall",
@@ -9,16 +10,6 @@ export const numSmallSlice = createSlice({
 		pushEquation: (state, action) => {
 			state.push(action.payload);
 		},
-
-		divideOperator: (state, action) => {},
-
-		multiplyOperator: (state, action) => {},
-
-		subtractOperator: (state, action) => {},
-
-		addOperator: (state, action) => {},
-
-		equalsOperator: (state, action) => {},
 
 		clearDisplaySl: () => initialState
 	}
