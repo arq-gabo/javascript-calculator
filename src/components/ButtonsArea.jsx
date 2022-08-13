@@ -9,6 +9,7 @@ import {
 
 import {
 	pushEquation,
+	changeOperator,
 	clearDisplaySl
 } from "../features/numSmall/numSmallSlice";
 
@@ -46,13 +47,17 @@ const ButtonsArea = () => {
 		dispatch(addNum(val));
 	};
 
+	const operators = ["%", "+", "-", "*", "/"];
+
 	const dispatchStateSm = val => {
-		const operators = ["%", "+", "-", "*", "/"];
 		if (!operators.includes(numLg[numLg.length - 1])) {
 			dispatch(pushEquation(parseFloat(numLg.join(""))));
 			dispatch(pushEquation(val));
 		} else if (numLg[0] === "%") {
 			dispatch(pushEquation(val));
+		} else if (numLg[0] === numSl[numSl.length - 1]) {
+			dispatch(addNum(val));
+			dispatch(changeOperator(val));
 		}
 	};
 
@@ -72,7 +77,10 @@ const ButtonsArea = () => {
 		{
 			button: "%",
 			funcClick: () => {
-				if (numLg[0] !== "%") {
+				if (
+					!operators.includes(numLg[0]) ||
+					(numLg[0] === "-" && numLg.length > 0)
+				) {
 					dispatch(
 						pushEquation(
 							parseFloat(

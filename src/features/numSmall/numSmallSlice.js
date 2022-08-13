@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = [];
-const operators = ["%", "-", "+", "*", "/"];
 
 export const numSmallSlice = createSlice({
 	name: "numSmall",
@@ -11,9 +10,14 @@ export const numSmallSlice = createSlice({
 			state.push(action.payload);
 		},
 
+		changeOperator: (state, action) => {
+			state[state.length - 1] = action.payload;
+		},
+
 		clearDisplaySl: () => initialState
 	}
 });
 
-export const { pushEquation, clearDisplaySl } = numSmallSlice.actions;
+export const { pushEquation, changeOperator, clearDisplaySl } =
+	numSmallSlice.actions;
 export default numSmallSlice.reducer;
