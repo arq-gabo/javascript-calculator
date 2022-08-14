@@ -164,7 +164,7 @@ const ButtonsArea = () => {
 			button: ".",
 			funcClick: () => clickBtn(numLg, ".", addDecimal)
 		},
-		{ button: "=" }
+		{ button: "=", funcClick: () => console.log(numSl, "----", numLg) }
 	];
 
 	return (
