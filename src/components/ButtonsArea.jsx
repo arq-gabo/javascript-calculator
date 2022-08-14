@@ -10,6 +10,7 @@ import {
 import {
 	pushEquation,
 	changeOperator,
+	deleteLastOperator,
 	clearDisplaySl
 } from "../features/numSmall/numSmallSlice";
 
@@ -47,6 +48,7 @@ const ButtonsArea = () => {
 		dispatch(addNum(val));
 	};
 
+	// Function for dispatch the state in small nums
 	const operators = ["%", "+", "-", "*", "/"];
 
 	const dispatchStateSm = val => {
@@ -58,6 +60,53 @@ const ButtonsArea = () => {
 		} else if (numLg[0] === numSl[numSl.length - 1]) {
 			dispatch(addNum(val));
 			dispatch(changeOperator(val));
+		}
+	};
+
+	// Function for calculate the final result
+	const calcTotal = arr => {
+		let acum = 0;
+		let currOp = "";
+
+		arr.forEach((val, idx) => {
+			if (idx === 0) {
+				acum = val;
+			} else if (typeof val === "string") {
+				currOp = val;
+			} else if (typeof val === "number") {
+				if (currOp === "+") {
+					acum += val;
+				} else if (currOp === "-") {
+					acum -= val;
+				} else if (currOp === "*") {
+					acum *= val;
+				} else if (currOp === "/") {
+					acum /= val;
+				}
+			}
+		});
+		return acum;
+	};
+
+	const equalFunc = () => {
+		let result = 0;
+		if (operators.includes(numLg[numLg.length - 1])) {
+			result = calcTotal(numSl);
+			dispatch(changeOperator("="));
+			dispatch(clearDisplayLg());
+			dispatch(pushEquation(result));
+			dispatch(addNum(result));
+		} else {
+			result = calcTotal([
+				calcTotal(numSl),
+				numSl[numSl.length - 1],
+				parseFloat(numLg.join(""))
+			]);
+			dispatch(pushEquation(parseFloat(numLg.join(""))));
+			dispatch(pushEquation("="));
+			dispatch(pushEquation(result));
+			dispatch(clearDisplayLg());
+			dispatch(addNum(result));
 		}
 	};
 
@@ -164,7 +213,7 @@ const ButtonsArea = () => {
 			button: ".",
 			funcClick: () => clickBtn(numLg, ".", addDecimal)
 		},
-		{ button: "=", funcClick: () => console.log(numSl, "----", numLg) }
+		{ button: "=", funcClick: () => equalFunc() }
 	];
 
 	return (

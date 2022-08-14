@@ -14,10 +14,18 @@ export const numSmallSlice = createSlice({
 			state[state.length - 1] = action.payload;
 		},
 
+		deleteLastOperator: (state, action) => {
+			state.pop();
+		},
+
 		clearDisplaySl: () => initialState
 	}
 });
 
-export const { pushEquation, changeOperator, clearDisplaySl } =
-	numSmallSlice.actions;
+export const {
+	pushEquation,
+	changeOperator,
+	deleteLastOperator,
+	clearDisplaySl
+} = numSmallSlice.actions;
 export default numSmallSlice.reducer;
