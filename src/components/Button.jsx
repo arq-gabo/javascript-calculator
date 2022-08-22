@@ -1,5 +1,4 @@
 import React from "react";
-import { addNum } from "../features/numLarge/numLargeSlice";
 
 import "./Button.scss";
 

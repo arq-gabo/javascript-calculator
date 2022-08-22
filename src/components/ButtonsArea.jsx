@@ -1,16 +1,17 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-	addNum,
-	addDecimal,
-	clearDisplayLg,
-	addMinuSing
+	pushElement,
+	changeFirstElement,
+	changeLastElement,
+	addMinusSing,
+	quitMinusSing,
+	clearDisplayLg
 } from "../features/numLarge/numLargeSlice";
 
 import {
-	pushEquation,
-	changeOperator,
-	deleteLastOperator,
+	pushEquationSl,
+	changeOperatorSl,
 	clearDisplaySl
 } from "../features/numSmall/numSmallSlice";
 
@@ -28,12 +29,6 @@ const ButtonsArea = () => {
 		alert("Exceeded the number of digits");
 	};
 
-	//Function for dispatch to the state if the num length is less of 14
-	const clickBtn = (state, val, func) => {
-		state.length < 14 ? dispatch(func(val)) : showAlert();
-		if (numLg[0] === "%") dispatch(pushEquation("*"));
-	};
-
 	// Function for transform array of numbers to number float for make anther operations
 	const arrToNum = valArr => parseFloat(valArr.join(""));
 
@@ -41,27 +36,6 @@ const ButtonsArea = () => {
 	const formatter = new Intl.NumberFormat("en-IN", {
 		maximumFractionDigits: 10
 	});
-
-	// Function to apply functionality on the big screen when an operator button is pressed
-	const clearAndSendLg = val => {
-		dispatch(clearDisplayLg());
-		dispatch(addNum(val));
-	};
-
-	// Function for dispatch the state in small nums
-	const operators = ["%", "+", "-", "*", "/"];
-
-	const dispatchStateSm = val => {
-		if (!operators.includes(numLg[numLg.length - 1])) {
-			dispatch(pushEquation(parseFloat(numLg.join(""))));
-			dispatch(pushEquation(val));
-		} else if (numLg[0] === "%") {
-			dispatch(pushEquation(val));
-		} else if (numLg[0] === numSl[numSl.length - 1]) {
-			dispatch(addNum(val));
-			dispatch(changeOperator(val));
-		}
-	};
 
 	// Function for calculate the final result
 	const calcTotal = arr => {
@@ -88,25 +62,100 @@ const ButtonsArea = () => {
 		return acum;
 	};
 
-	const equalFunc = () => {
-		let result = 0;
-		if (operators.includes(numLg[numLg.length - 1])) {
-			result = calcTotal(numSl);
-			dispatch(changeOperator("="));
-			dispatch(clearDisplayLg());
-			dispatch(pushEquation(result));
-			dispatch(addNum(result));
+	// Functionality clear buttom
+	const clearButtom = () => {
+		dispatch(clearDisplayLg());
+		dispatch(clearDisplaySl());
+	};
+
+	// Functionality plus/minus button
+	const plusMinusButton = val => {
+		const operators = ["+", "-", "*", "/", "%"];
+		if (!numLg.includes(val) && !operators.includes(numLg[0])) {
+			dispatch(addMinusSing(val));
+		} else if (numLg.includes(val)) {
+			dispatch(quitMinusSing(val));
+		}
+	};
+
+	// Functionality when press equal buttom
+	const equalButton = () => {
+		console.log("equal");
+	};
+
+	//Functionality of the buttom numbers 0 to 9
+	const numButton = val => {
+		const operator = ["%", "/", "*", "-", "+"];
+		if (numLg[0] === "0" && numLg.length === 1 && numSl.length === 0) {
+			dispatch(changeFirstElement(val));
+		} else if (
+			operator.includes(numLg[0]) &&
+			operator.includes(numSl[numSl.length - 1])
+		) {
+			dispatch(changeFirstElement(val));
+		} else if (numLg[0] === "%") {
+			dispatch(changeFirstElement(val));
+			dispatch(pushEquationSl("*"));
 		} else {
-			result = calcTotal([
-				calcTotal(numSl),
-				numSl[numSl.length - 1],
-				parseFloat(numLg.join(""))
-			]);
-			dispatch(pushEquation(parseFloat(numLg.join(""))));
-			dispatch(pushEquation("="));
-			dispatch(pushEquation(result));
+			dispatch(pushElement(val));
+		}
+	};
+
+	// Function for add dot decimal to nums
+	const decimalButtom = val => {
+		const operators = ["+", "-", "*", "/"];
+		if (!numLg.includes(val)) {
+			if (operators.includes(numLg[0])) {
+				dispatch(changeFirstElement("0"));
+				dispatch(pushElement(val));
+			} else if (numLg[0] === "%") {
+				dispatch(changeFirstElement("0"));
+				dispatch(pushElement(val));
+			} else {
+				dispatch(pushElement(val));
+			}
+		}
+	};
+
+	//Functionality of the percentage buttom
+	const percentageButton = val => {
+		const operator = ["+", "-", "*", "/", "%"];
+		if (!operator.includes(numLg[numLg.length - 1])) {
 			dispatch(clearDisplayLg());
-			dispatch(addNum(result));
+			dispatch(changeFirstElement(val));
+			dispatch(
+				pushEquationSl(
+					parseFloat(
+						formatter.format(parseFloat(numLg.join("")) * 0.01).replace(",", "")
+					)
+				)
+			);
+		}
+	};
+
+	//Functionality of the buttom operator + - * /
+	const operatorButtom = val => {
+		const operators = ["+", "-", "*", "/"];
+		if (numLg[0] === "0" && numLg.length > 1) {
+			dispatch(pushEquationSl(arrToNum(numLg)));
+			dispatch(pushEquationSl(val));
+			dispatch(clearDisplayLg());
+			dispatch(changeFirstElement(val));
+			console.log("caso 1");
+		} else if (operators.includes(numLg[numLg.length - 1])) {
+			dispatch(changeOperatorSl(val));
+			dispatch(changeFirstElement(val));
+			console.log("caso 2");
+		} else if (numLg[0] === "%") {
+			dispatch(pushEquationSl(val));
+			dispatch(changeFirstElement(val));
+			console.log("caso 3");
+		} else {
+			dispatch(pushEquationSl(arrToNum(numLg)));
+			dispatch(pushEquationSl(val));
+			dispatch(clearDisplayLg());
+			dispatch(changeFirstElement(val));
+			console.log("caso 4");
 		}
 	};
 
@@ -114,106 +163,77 @@ const ButtonsArea = () => {
 	const calObj = [
 		{
 			button: "C",
-			funcClick: () => {
-				dispatch(clearDisplayLg());
-				dispatch(clearDisplaySl());
-			}
+			funcClick: () => clearButtom()
 		},
 		{
 			button: "&#177;",
-			funcClick: () => clickBtn(numLg, "-", addMinuSing)
+			funcClick: () => plusMinusButton("-")
 		},
 		{
 			button: "%",
-			funcClick: () => {
-				if (
-					!operators.includes(numLg[0]) ||
-					(numLg[0] === "-" && numLg.length > 0)
-				) {
-					dispatch(
-						pushEquation(
-							parseFloat(
-								formatter.format(arrToNum(numLg) * 0.01).replace(",", "")
-							)
-						)
-					);
-					clearAndSendLg("%");
-				}
-			}
+			funcClick: () => percentageButton("%")
 		},
 		{
 			button: "&#247;",
-			funcClick: () => {
-				dispatchStateSm("/");
-				clearAndSendLg("/");
-			}
+			funcClick: () => operatorButtom("/")
 		},
 		{
 			button: 7,
-			funcClick: () => clickBtn(numLg, "7", addNum)
+			funcClick: () => numButton("7")
 		},
 		{
 			button: 8,
-			funcClick: () => clickBtn(numLg, "8", addNum)
+			funcClick: () => numButton("8")
 		},
 		{
 			button: 9,
-			funcClick: () => clickBtn(numLg, "9", addNum)
+			funcClick: () => numButton("9")
 		},
 		{
 			button: "x",
-			funcClick: () => {
-				dispatchStateSm("*");
-				clearAndSendLg("*");
-			}
+			funcClick: () => operatorButtom("*")
 		},
 		{
 			button: 4,
-			funcClick: () => clickBtn(numLg, "4", addNum)
+			funcClick: () => numButton("4")
 		},
 		{
 			button: 5,
-			funcClick: () => clickBtn(numLg, "5", addNum)
+			funcClick: () => numButton("5")
 		},
 		{
 			button: 6,
-			funcClick: () => clickBtn(numLg, "6", addNum)
+			funcClick: () => numButton("6")
 		},
 		{
 			button: "&#8211;",
-			funcClick: () => {
-				dispatchStateSm("-");
-				clearAndSendLg("-");
-			}
+			funcClick: () => operatorButtom("-")
 		},
 		{
 			button: 1,
-			funcClick: () => clickBtn(numLg, "1", addNum)
+			funcClick: () => numButton("1")
 		},
 		{
 			button: 2,
-			funcClick: () => clickBtn(numLg, "2", addNum)
+			funcClick: () => numButton("2")
 		},
 		{
 			button: 3,
-			funcClick: () => clickBtn(numLg, "3", addNum)
+			funcClick: () => numButton("3")
 		},
 		{
 			button: "+",
-			funcClick: () => {
-				dispatchStateSm("+");
-				clearAndSendLg("+");
-			}
+			funcClick: () => operatorButtom("+")
 		},
 		{
 			button: 0,
-			funcClick: () => clickBtn(numLg, "0", addNum)
+			funcClick: () => numButton("0")
 		},
 		{
 			button: ".",
-			funcClick: () => clickBtn(numLg, ".", addDecimal)
+			funcClick: () => decimalButtom(".")
 		},
-		{ button: "=", funcClick: () => equalFunc() }
+		{ button: "=", funcClick: () => equalButton() }
 	];
 
 	return (
