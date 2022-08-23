@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
 	pushElement,
 	changeFirstElement,
-	changeLastElement,
 	addMinusSing,
 	quitMinusSing,
 	clearDisplayLg
@@ -68,34 +67,85 @@ const ButtonsArea = () => {
 		dispatch(clearDisplaySl());
 	};
 
-	// Functionality plus/minus button
+	// Functionality minus button
 	const plusMinusButton = val => {
-		const operators = ["+", "-", "*", "/", "%"];
-		if (!numLg.includes(val) && !operators.includes(numLg[0])) {
-			dispatch(addMinusSing(val));
-		} else if (numLg.includes(val)) {
-			dispatch(quitMinusSing(val));
+		const operators = ["+", "*", "/"];
+		if (!numLg.includes("-")) {
+			if (numLg[0] === "0" && numLg.length === 1) {
+				dispatch(changeFirstElement(val));
+			} else if (numLg[0] === "%") {
+				dispatch(changeFirstElement(val));
+				dispatch(pushEquationSl(val));
+			} else if (numLg[0] === "0" && numLg[1] === ".") {
+				dispatch(addMinusSing(val));
+			} else if (operators.includes(numLg[0])) {
+				dispatch(changeFirstElement(val));
+			} else {
+				dispatch(addMinusSing(val));
+			}
+		} else {
+			if (numLg.length === 1) {
+				dispatch(changeFirstElement("0"));
+			} else {
+				dispatch(quitMinusSing(val));
+			}
 		}
 	};
 
 	// Functionality when press equal buttom
 	const equalButton = () => {
-		console.log("equal");
+		let result = 0;
+		const operators = ["+", "-", "*", "/", "%"];
+		if (operators.includes(numLg[numLg.length - 1])) {
+			if (operators.includes(numSl[numSl.length - 1])) {
+				dispatch(changeOperatorSl("="));
+				dispatch(pushEquationSl(calcTotal(numSl)));
+				dispatch(clearDisplayLg());
+				dispatch(changeFirstElement(calcTotal(numSl)));
+			} else {
+				dispatch(pushEquationSl("="));
+				dispatch(pushEquationSl(calcTotal(numSl)));
+				dispatch(clearDisplayLg());
+				dispatch(changeFirstElement(calcTotal(numSl)));
+			}
+		} else {
+			result = calcTotal([
+				calcTotal(numSl),
+				numSl[numSl.length - 1],
+				arrToNum(numLg)
+			]);
+			dispatch(pushEquationSl(numLg));
+			dispatch(pushEquationSl("="));
+			dispatch(pushEquationSl(result));
+			dispatch(clearDisplayLg());
+			dispatch(changeFirstElement(result));
+		}
 	};
 
 	//Functionality of the buttom numbers 0 to 9
 	const numButton = val => {
-		const operator = ["%", "/", "*", "-", "+"];
-		if (numLg[0] === "0" && numLg.length === 1 && numSl.length === 0) {
-			dispatch(changeFirstElement(val));
-		} else if (
-			operator.includes(numLg[0]) &&
-			operator.includes(numSl[numSl.length - 1])
-		) {
-			dispatch(changeFirstElement(val));
+		const operators = ["+", "*", "/"];
+		if (numLg[0] === "0") {
+			if (numLg[1] === ".") {
+				dispatch(pushElement(val));
+			} else {
+				dispatch(changeFirstElement(val));
+			}
 		} else if (numLg[0] === "%") {
 			dispatch(changeFirstElement(val));
 			dispatch(pushEquationSl("*"));
+		} else if (numLg[0] === "-") {
+			if (numSl[numSl.length - 1] === "-" && numLg.length === 1) {
+				dispatch(changeFirstElement(val));
+			} else if (numSl[numSl.length - 1] === "-" && numLg.length > 1) {
+				dispatch(pushElement(val));
+			} else if (val !== "0") {
+				dispatch(pushElement(val));
+			} else if (val === "0" && numLg.length > 1) {
+				dispatch(pushElement(val));
+			}
+		} else if (operators.includes(numLg[0])) {
+			dispatch(changeFirstElement(val));
 		} else {
 			dispatch(pushElement(val));
 		}
@@ -103,14 +153,22 @@ const ButtonsArea = () => {
 
 	// Function for add dot decimal to nums
 	const decimalButtom = val => {
-		const operators = ["+", "-", "*", "/"];
+		const operators = ["+", "*", "/"];
 		if (!numLg.includes(val)) {
 			if (operators.includes(numLg[0])) {
 				dispatch(changeFirstElement("0"));
 				dispatch(pushElement(val));
 			} else if (numLg[0] === "%") {
+				dispatch(pushEquationSl("*"));
 				dispatch(changeFirstElement("0"));
 				dispatch(pushElement(val));
+			} else if (numLg[0] === "-") {
+				if (numLg.length === 1) {
+					dispatch(pushElement("0"));
+					dispatch(pushElement("."));
+				} else {
+					dispatch(pushElement(val));
+				}
 			} else {
 				dispatch(pushElement(val));
 			}
@@ -141,21 +199,17 @@ const ButtonsArea = () => {
 			dispatch(pushEquationSl(val));
 			dispatch(clearDisplayLg());
 			dispatch(changeFirstElement(val));
-			console.log("caso 1");
 		} else if (operators.includes(numLg[numLg.length - 1])) {
 			dispatch(changeOperatorSl(val));
 			dispatch(changeFirstElement(val));
-			console.log("caso 2");
 		} else if (numLg[0] === "%") {
 			dispatch(pushEquationSl(val));
 			dispatch(changeFirstElement(val));
-			console.log("caso 3");
 		} else {
 			dispatch(pushEquationSl(arrToNum(numLg)));
 			dispatch(pushEquationSl(val));
 			dispatch(clearDisplayLg());
 			dispatch(changeFirstElement(val));
-			console.log("caso 4");
 		}
 	};
 

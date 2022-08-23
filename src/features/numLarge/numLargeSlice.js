@@ -15,10 +15,6 @@ export const numLargeSlice = createSlice({
 			state[0] = action.payload;
 		},
 
-		changeLastElement: (state, action) => {
-			state[state.length - 1] = action.payload;
-		},
-
 		addMinusSing: (state, action) => {
 			state.unshift(action.payload);
 		},
@@ -34,7 +30,6 @@ export const numLargeSlice = createSlice({
 export const {
 	pushElement,
 	changeFirstElement,
-	changeLastElement,
 	addMinusSing,
 	quitMinusSing,
 	clearDisplayLg
