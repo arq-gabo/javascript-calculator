@@ -67,12 +67,16 @@ const ButtonsArea = () => {
 		dispatch(clearDisplaySl());
 	};
 
-	// Functionality minus button
+	// Functionality plus/minus button
 	const plusMinusButton = val => {
 		const operators = ["+", "*", "/"];
 		if (!numLg.includes("-")) {
 			if (numLg[0] === "0" && numLg.length === 1) {
 				dispatch(changeFirstElement(val));
+			} else if (numSl.includes("=")) {
+				dispatch(clearDisplaySl());
+				dispatch(pushEquationSl(arrToNum(numLg) * -1));
+				dispatch(clearDisplayLg());
 			} else if (numLg[0] === "%") {
 				dispatch(changeFirstElement(val));
 				dispatch(pushEquationSl(val));
@@ -96,29 +100,35 @@ const ButtonsArea = () => {
 	const equalButton = () => {
 		let result = 0;
 		const operators = ["+", "-", "*", "/", "%"];
-		if (operators.includes(numLg[numLg.length - 1])) {
-			if (operators.includes(numSl[numSl.length - 1])) {
-				dispatch(changeOperatorSl("="));
-				dispatch(pushEquationSl(calcTotal(numSl)));
-				dispatch(clearDisplayLg());
-				dispatch(changeFirstElement(calcTotal(numSl)));
-			} else {
+		if (!numSl.includes("=")) {
+			if (numSl.length === 0) {
+				dispatch(pushEquationSl(arrToNum(numLg)));
 				dispatch(pushEquationSl("="));
-				dispatch(pushEquationSl(calcTotal(numSl)));
+				dispatch(pushEquationSl(arrToNum(numLg)));
+			} else if (operators.includes(numLg[numLg.length - 1])) {
+				if (operators.includes(numSl[numSl.length - 1])) {
+					dispatch(changeOperatorSl("="));
+					dispatch(pushEquationSl(calcTotal(numSl)));
+					dispatch(clearDisplayLg());
+					dispatch(changeFirstElement(calcTotal(numSl)));
+				} else {
+					dispatch(pushEquationSl("="));
+					dispatch(pushEquationSl(calcTotal(numSl)));
+					dispatch(clearDisplayLg());
+					dispatch(changeFirstElement(calcTotal(numSl)));
+				}
+			} else {
+				result = calcTotal([
+					calcTotal(numSl),
+					numSl[numSl.length - 1],
+					arrToNum(numLg)
+				]);
+				dispatch(pushEquationSl(arrToNum(numLg)));
+				dispatch(pushEquationSl("="));
+				dispatch(pushEquationSl(result));
 				dispatch(clearDisplayLg());
-				dispatch(changeFirstElement(calcTotal(numSl)));
+				dispatch(changeFirstElement(result));
 			}
-		} else {
-			result = calcTotal([
-				calcTotal(numSl),
-				numSl[numSl.length - 1],
-				arrToNum(numLg)
-			]);
-			dispatch(pushEquationSl(numLg));
-			dispatch(pushEquationSl("="));
-			dispatch(pushEquationSl(result));
-			dispatch(clearDisplayLg());
-			dispatch(changeFirstElement(result));
 		}
 	};
 
@@ -146,6 +156,10 @@ const ButtonsArea = () => {
 			}
 		} else if (operators.includes(numLg[0])) {
 			dispatch(changeFirstElement(val));
+		} else if (numSl.includes("=")) {
+			dispatch(clearDisplayLg());
+			dispatch(clearDisplaySl());
+			dispatch(changeFirstElement(val));
 		} else {
 			dispatch(pushElement(val));
 		}
@@ -169,6 +183,10 @@ const ButtonsArea = () => {
 				} else {
 					dispatch(pushElement(val));
 				}
+			} else if (numSl.includes("=")) {
+				dispatch(clearDisplaySl());
+				dispatch(clearDisplayLg());
+				dispatch(pushElement(val));
 			} else {
 				dispatch(pushElement(val));
 			}
@@ -179,37 +197,77 @@ const ButtonsArea = () => {
 	const percentageButton = val => {
 		const operator = ["+", "-", "*", "/", "%"];
 		if (!operator.includes(numLg[numLg.length - 1])) {
-			dispatch(clearDisplayLg());
-			dispatch(changeFirstElement(val));
-			dispatch(
-				pushEquationSl(
-					parseFloat(
-						formatter.format(parseFloat(numLg.join("")) * 0.01).replace(",", "")
+			if (!numSl.includes("=")) {
+				dispatch(clearDisplayLg());
+				dispatch(changeFirstElement(val));
+				dispatch(
+					pushEquationSl(
+						parseFloat(
+							formatter
+								.format(parseFloat(numLg.join("")) * 0.01)
+								.replace(",", "")
+						)
 					)
-				)
-			);
+				);
+			} else {
+				dispatch(clearDisplaySl());
+				dispatch(
+					pushEquationSl(
+						parseFloat(
+							formatter
+								.format(parseFloat(numLg.join("")) * 0.01)
+								.replace(",", "")
+						)
+					)
+				);
+				dispatch(changeFirstElement("%"));
+			}
 		}
 	};
 
-	//Functionality of the buttom operator + - * /
+	//Functionality of the buttom operator + * /
 	const operatorButtom = val => {
-		const operators = ["+", "-", "*", "/"];
-		if (numLg[0] === "0" && numLg.length > 1) {
-			dispatch(pushEquationSl(arrToNum(numLg)));
-			dispatch(pushEquationSl(val));
-			dispatch(clearDisplayLg());
-			dispatch(changeFirstElement(val));
-		} else if (operators.includes(numLg[numLg.length - 1])) {
-			dispatch(changeOperatorSl(val));
-			dispatch(changeFirstElement(val));
-		} else if (numLg[0] === "%") {
-			dispatch(pushEquationSl(val));
-			dispatch(changeFirstElement(val));
-		} else {
-			dispatch(pushEquationSl(arrToNum(numLg)));
-			dispatch(pushEquationSl(val));
-			dispatch(clearDisplayLg());
-			dispatch(changeFirstElement(val));
+		const operators = ["+", "*", "/"];
+		if (operators.includes(val)) {
+			if (
+				operators.includes(numLg[0]) ||
+				(numLg[0] === "-" && numLg.length === 1)
+			) {
+				dispatch(changeOperatorSl(val));
+				dispatch(changeFirstElement(val));
+			} else if (numLg[0] === "%") {
+				dispatch(pushEquationSl(val));
+				dispatch(changeFirstElement(val));
+			} else if (numSl.includes("=")) {
+				dispatch(clearDisplaySl());
+				dispatch(pushEquationSl(arrToNum(numLg)));
+				dispatch(pushEquationSl(val));
+				dispatch(clearDisplayLg());
+				dispatch(changeFirstElement(val));
+			} else {
+				dispatch(pushEquationSl(arrToNum(numLg)));
+				dispatch(pushEquationSl(val));
+				dispatch(clearDisplayLg());
+				dispatch(changeFirstElement(val));
+			}
+		} else if (val === "-") {
+			if (operators.includes(numLg[0])) {
+				dispatch(changeFirstElement(val));
+			} else if (numLg[0] === "%") {
+				dispatch(pushEquationSl(val));
+				dispatch(changeFirstElement(val));
+			} else if (numSl.includes("=")) {
+				dispatch(clearDisplaySl());
+				dispatch(pushEquationSl(arrToNum(numLg)));
+				dispatch(pushEquationSl(val));
+				dispatch(clearDisplayLg());
+				dispatch(changeFirstElement(val));
+			} else if (!operators.includes(numLg[0]) && numLg[0] !== "-") {
+				dispatch(pushEquationSl(arrToNum(numLg)));
+				dispatch(pushEquationSl(val));
+				dispatch(clearDisplayLg());
+				dispatch(changeFirstElement(val));
+			}
 		}
 	};
 
