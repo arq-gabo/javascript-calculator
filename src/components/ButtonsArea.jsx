@@ -58,7 +58,7 @@ const ButtonsArea = () => {
 				}
 			}
 		});
-		return acum;
+		return parseFloat(formatter.format(acum).replace(",", ""));
 	};
 
 	// Functionality clear buttom
@@ -135,93 +135,105 @@ const ButtonsArea = () => {
 	//Functionality of the buttom numbers 0 to 9
 	const numButton = val => {
 		const operators = ["+", "*", "/"];
-		if (numLg[0] === "0") {
-			if (numLg[1] === ".") {
-				dispatch(pushElement(val));
+		if (numLg.length < 12 && numSl.join("").length < 45) {
+			if (numLg[0] === "0") {
+				if (numLg[1] === ".") {
+					dispatch(pushElement(val));
+				} else {
+					dispatch(changeFirstElement(val));
+				}
+			} else if (numLg[0] === "%") {
+				dispatch(changeFirstElement(val));
+				dispatch(pushEquationSl("*"));
+			} else if (numLg[0] === "-") {
+				if (numSl[numSl.length - 1] === "-" && numLg.length === 1) {
+					dispatch(changeFirstElement(val));
+				} else if (numSl[numSl.length - 1] === "-" && numLg.length > 1) {
+					dispatch(pushElement(val));
+				} else if (val !== "0") {
+					dispatch(pushElement(val));
+				} else if (val === "0" && numLg.length > 1) {
+					dispatch(pushElement(val));
+				}
+			} else if (operators.includes(numLg[0])) {
+				dispatch(changeFirstElement(val));
+			} else if (numSl.includes("=")) {
+				dispatch(clearDisplayLg());
+				dispatch(clearDisplaySl());
+				dispatch(changeFirstElement(val));
 			} else {
-				dispatch(changeFirstElement(val));
-			}
-		} else if (numLg[0] === "%") {
-			dispatch(changeFirstElement(val));
-			dispatch(pushEquationSl("*"));
-		} else if (numLg[0] === "-") {
-			if (numSl[numSl.length - 1] === "-" && numLg.length === 1) {
-				dispatch(changeFirstElement(val));
-			} else if (numSl[numSl.length - 1] === "-" && numLg.length > 1) {
-				dispatch(pushElement(val));
-			} else if (val !== "0") {
-				dispatch(pushElement(val));
-			} else if (val === "0" && numLg.length > 1) {
 				dispatch(pushElement(val));
 			}
-		} else if (operators.includes(numLg[0])) {
-			dispatch(changeFirstElement(val));
-		} else if (numSl.includes("=")) {
-			dispatch(clearDisplayLg());
-			dispatch(clearDisplaySl());
-			dispatch(changeFirstElement(val));
 		} else {
-			dispatch(pushElement(val));
+			showAlert();
 		}
 	};
 
 	// Function for add dot decimal to nums
 	const decimalButtom = val => {
 		const operators = ["+", "*", "/"];
-		if (!numLg.includes(val)) {
-			if (operators.includes(numLg[0])) {
-				dispatch(changeFirstElement("0"));
-				dispatch(pushElement(val));
-			} else if (numLg[0] === "%") {
-				dispatch(pushEquationSl("*"));
-				dispatch(changeFirstElement("0"));
-				dispatch(pushElement(val));
-			} else if (numLg[0] === "-") {
-				if (numLg.length === 1) {
-					dispatch(pushElement("0"));
-					dispatch(pushElement("."));
+		if (numLg.length < 12 && numSl.join("").length < 45) {
+			if (!numLg.includes(val)) {
+				if (operators.includes(numLg[0])) {
+					dispatch(changeFirstElement("0"));
+					dispatch(pushElement(val));
+				} else if (numLg[0] === "%") {
+					dispatch(pushEquationSl("*"));
+					dispatch(changeFirstElement("0"));
+					dispatch(pushElement(val));
+				} else if (numLg[0] === "-") {
+					if (numLg.length === 1) {
+						dispatch(pushElement("0"));
+						dispatch(pushElement("."));
+					} else {
+						dispatch(pushElement(val));
+					}
+				} else if (numSl.includes("=")) {
+					dispatch(clearDisplaySl());
+					dispatch(clearDisplayLg());
+					dispatch(pushElement(val));
 				} else {
 					dispatch(pushElement(val));
 				}
-			} else if (numSl.includes("=")) {
-				dispatch(clearDisplaySl());
-				dispatch(clearDisplayLg());
-				dispatch(pushElement(val));
-			} else {
-				dispatch(pushElement(val));
 			}
+		} else {
+			showAlert();
 		}
 	};
 
 	//Functionality of the percentage buttom
 	const percentageButton = val => {
 		const operator = ["+", "-", "*", "/", "%"];
-		if (!operator.includes(numLg[numLg.length - 1])) {
-			if (!numSl.includes("=")) {
-				dispatch(clearDisplayLg());
-				dispatch(changeFirstElement(val));
-				dispatch(
-					pushEquationSl(
-						parseFloat(
-							formatter
-								.format(parseFloat(numLg.join("")) * 0.01)
-								.replace(",", "")
+		if (numLg.length < 12 && numSl.join("").length < 45) {
+			if (!operator.includes(numLg[numLg.length - 1])) {
+				if (!numSl.includes("=")) {
+					dispatch(clearDisplayLg());
+					dispatch(changeFirstElement(val));
+					dispatch(
+						pushEquationSl(
+							parseFloat(
+								formatter
+									.format(parseFloat(numLg.join("")) * 0.01)
+									.replace(",", "")
+							)
 						)
-					)
-				);
-			} else {
-				dispatch(clearDisplaySl());
-				dispatch(
-					pushEquationSl(
-						parseFloat(
-							formatter
-								.format(parseFloat(numLg.join("")) * 0.01)
-								.replace(",", "")
+					);
+				} else {
+					dispatch(clearDisplaySl());
+					dispatch(
+						pushEquationSl(
+							parseFloat(
+								formatter
+									.format(parseFloat(numLg.join("")) * 0.01)
+									.replace(",", "")
+							)
 						)
-					)
-				);
-				dispatch(changeFirstElement("%"));
+					);
+					dispatch(changeFirstElement("%"));
+				}
 			}
+		} else {
+			showAlert();
 		}
 	};
 

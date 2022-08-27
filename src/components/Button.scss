@@ -1,3 +1,5 @@
+
+
 .buttonContainer .buttonStyle{
     width: 39px;
     height: 39px;
@@ -7,7 +9,7 @@
     font-weight: 700;
     font-size: 14px;
     background-color: rgb(52, 52, 52);
-    color: white;
+    color: #fff;
 }
 
 .buttonContainer:nth-of-type(n):nth-of-type(-n+3) button {
@@ -17,7 +19,7 @@
 
 .buttonContainer:nth-of-type(4n+0) button, .buttonContainer:last-of-type button {
     background-color: rgb(249, 162, 5);
-    color: white;
+    color: #ffff;
 }
 
 .buttonContainer:nth-of-type(17) button {

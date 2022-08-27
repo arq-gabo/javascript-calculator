@@ -3,11 +3,10 @@
 :root {
     // fonts
     --font-global: 'Open Sans', sans-serif;
-
-    // Colors
-    
 }
 
 $display-global: flex;
 $flex-dir-col: column;
 $align-item-cen: center;
+$justify-content: space-between;
+$color-font: #fff;

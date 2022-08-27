@@ -1,5 +1,7 @@
+@import "../scss/abstracts/variable";
+
 .buttonAreaContainer {
-    display: flex;
+    display: $display-global;
     flex-wrap: wrap;
     position: absolute;
     top: 180px;

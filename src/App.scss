@@ -2,8 +2,8 @@
 
 .App {
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+    display: $display-global;
+    flex-direction: $flex-dir-col;
+    align-items: $align-item-cen;
+    justify-content: $justify-content;
 }

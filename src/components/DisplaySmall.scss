@@ -1,3 +1,5 @@
+@import "../scss/abstracts/variable";
+
 .displaySmallContainer{
     position: absolute;
     top: 50px;
@@ -8,7 +10,7 @@
 
 .displaySmallFont {
     margin: 0;
-    color: #FFFFFF;
+    color: $color-font;
     font-size: 17px;
     font-weight: 300;
     text-align: right;
