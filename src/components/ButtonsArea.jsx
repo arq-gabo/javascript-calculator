@@ -287,77 +287,99 @@ const ButtonsArea = () => {
 	const calObj = [
 		{
 			button: "C",
-			funcClick: () => clearButtom()
+			funcClick: () => clearButtom(),
+			id: "clear"
 		},
 		{
 			button: "&#177;",
-			funcClick: () => plusMinusButton("-")
+			funcClick: () => plusMinusButton("-"),
+			id: "minus"
 		},
 		{
 			button: "%",
-			funcClick: () => percentageButton("%")
+			funcClick: () => percentageButton("%"),
+			id: "percentage"
 		},
 		{
 			button: "&#247;",
-			funcClick: () => operatorButtom("/")
+			funcClick: () => operatorButtom("/"),
+			id: "divide"
 		},
 		{
 			button: 7,
-			funcClick: () => numButton("7")
+			funcClick: () => numButton("7"),
+			id: "seven"
 		},
 		{
 			button: 8,
-			funcClick: () => numButton("8")
+			funcClick: () => numButton("8"),
+			id: "eight"
 		},
 		{
 			button: 9,
-			funcClick: () => numButton("9")
+			funcClick: () => numButton("9"),
+			id: "nine"
 		},
 		{
 			button: "x",
-			funcClick: () => operatorButtom("*")
+			funcClick: () => operatorButtom("*"),
+			id: "multiply"
 		},
 		{
 			button: 4,
-			funcClick: () => numButton("4")
+			funcClick: () => numButton("4"),
+			id: "four"
 		},
 		{
 			button: 5,
-			funcClick: () => numButton("5")
+			funcClick: () => numButton("5"),
+			id: "five"
 		},
 		{
 			button: 6,
-			funcClick: () => numButton("6")
+			funcClick: () => numButton("6"),
+			id: "six"
 		},
 		{
 			button: "&#8211;",
-			funcClick: () => operatorButtom("-")
+			funcClick: () => operatorButtom("-"),
+			id: "subtract"
 		},
 		{
 			button: 1,
-			funcClick: () => numButton("1")
+			funcClick: () => numButton("1"),
+			id: "one"
 		},
 		{
 			button: 2,
-			funcClick: () => numButton("2")
+			funcClick: () => numButton("2"),
+			id: "two"
 		},
 		{
 			button: 3,
-			funcClick: () => numButton("3")
+			funcClick: () => numButton("3"),
+			id: "three"
 		},
 		{
 			button: "+",
-			funcClick: () => operatorButtom("+")
+			funcClick: () => operatorButtom("+"),
+			id: "add"
 		},
 		{
 			button: 0,
-			funcClick: () => numButton("0")
+			funcClick: () => numButton("0"),
+			id: "zero"
 		},
 		{
 			button: ".",
-			funcClick: () => decimalButtom(".")
+			funcClick: () => decimalButtom("."),
+			id: "decimal"
 		},
-		{ button: "=", funcClick: () => equalButton() }
+		{
+			button: "=",
+			funcClick: () => equalButton(),
+			id: "equals"
+		}
 	];
 
 	return (
@@ -368,6 +390,7 @@ const ButtonsArea = () => {
 						key={idx}
 						valBtn={item.button}
 						clickFunction={item.funcClick}
+						id={item.id}
 					/>
 				);
 			})}

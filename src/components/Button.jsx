@@ -2,7 +2,7 @@ import React from "react";
 
 import "./Button.scss";
 
-const Button = ({ valBtn, clickFunction }) => {
+const Button = ({ valBtn, clickFunction, id }) => {
 	const decodeStr = val => {
 		const parser = new DOMParser();
 		const decodedString = parser.parseFromString(
@@ -14,7 +14,7 @@ const Button = ({ valBtn, clickFunction }) => {
 
 	return (
 		<div className="buttonContainer">
-			<button className="buttonStyle" onClick={clickFunction}>
+			<button className="buttonStyle" onClick={clickFunction} id={id}>
 				{valBtn.length > 1 ? decodeStr(valBtn) : valBtn}
 			</button>
 		</div>

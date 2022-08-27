@@ -20,7 +20,9 @@ const DisplayMajor = () => {
 
 	return (
 		<div className="displayLargeContainer">
-			<p className={classNameFont}>{num}</p>
+			<p className={classNameFont} id="display">
+				{num}
+			</p>
 		</div>
 	);
 };
