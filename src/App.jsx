@@ -1,13 +1,11 @@
-import { useState } from "react";
+import React from "react";
 import "./App.scss";
 import Header from "./components/Header";
 import CalculatorContainer from "./components/CalculatorContainer";
 import Footer from "./components/Footer";
 
 // Redux
-import { useSelector } from "react-redux";
 
-import iphonePic1 from "./iphoneBG.jpg";
 import iphonePic2 from "./iphoneBG2.jpg";
 
 function App() {
